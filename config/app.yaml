@@ -1,0 +1,10 @@
+db_path: "../data/db/harvests_real.db"
+default_source: "mv"
+app_title: "はーとふる農園｜収量ダッシュボード（実務）"
+
+runtime: python311
+env_variables:
+  APP_ENV: "prod"
+  DB_PATH_PROD: "/home/matsuoka/work-automation/heartful-analytics/data/db/harvests_real.db"
+  DB_PATH_STAGE: "/home/matsuoka/work-automation/heartful-analytics/data/db/harvests_stage.db"
+  DB_PATH_DEV: "/home/matsuoka/work-automation/heartful-analytics/data/db/harvests.db"

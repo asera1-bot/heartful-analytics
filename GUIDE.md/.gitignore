@@ -1,0 +1,14 @@
+# venv & Python cache
+venv/
+__pycache__/
+*.pyc
+
+# SQlite & ロック
+*.db
+*.db-wal
+*.db-shm
+
+# logs & local config
+logs/
+.env
+config/*.local.yaml
