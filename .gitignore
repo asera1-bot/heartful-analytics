@@ -1,4 +1,57 @@
-.env
+# ===== Python =====
 __pycache__/
+*.py[cod]
+*.pyd
+*.pyo
+*.pdb
+*.so
+*.egg-info/
+dist/
+build/
+
+# ===== Virtualenv =====
+.venv/
+venv/
+ENV/
+.envrc
+
+# ===== Jupyter =====
+.ipynb_checkpoints/
+
+# ===== Streamlit =====
+.streamlit/secrets.toml
+
+# ===== OS =====
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ===== IDE =====
 .vscode/
+.idea/
+
+# ===== Logs / temp =====
+*.log
+*.tmp
+
+# ===== Data / outputs (project-specific) =====
+data/
+*.sqlite
 *.db
+*.csv
+*.tsv
+*.xlsx
+*.xls
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.pdf
+
+# ===== Credentials =====
+.env
+*.pem
+*.key
+*_token*
+*secret*
+
