@@ -1,5 +1,6 @@
 from pathlib import Path
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
+import pandas as pd
 
 # プロジェクトのルートディレクトリ
 BASE_DIR = Path(__file__).resolve().parent
@@ -28,3 +29,8 @@ def get_engine(env: str = "real"):
     """
     db_path = resolve_db_path(env)
     return create_engine(f"sqlite:///{db_path}", future=True)
+
+def read_sql_safe(engine, sql: str, params: dict | None = None) -> pd.DataFrame:
+    """SQLを安全に実行。失敗したら例外をそのまま投げる（呼び出し側でフォールバック）。"""
+    with engine.connect() as conn:
+        return pd.read_sql(text(sql), conn, params=params or {})

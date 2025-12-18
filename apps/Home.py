@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd
 from sqlalchemy import text
+from datetime import datetime
+
 from db_config import get_engine
 
 st.set_page_config(page_title="Heartful Analytics", layout="wide")
@@ -43,3 +45,30 @@ with col2:
     else:
         st.info("harvest_monhtly が空です。")
 
+def sample_harvest_df() -> pd.DataFrame:
+    return pd.DataFrame({
+        "harvest_date": pd.to_datetime(["2025-12-01", "2025-12-02", "2025-12-03"]),
+        "company": ["東レ", "昭和女子大学", "未定"},
+        "farm": ["A1", "B2", "C1"],
+        "crop": ["べビーリーフ", "イチゴ", "べビーリーフ"],
+        "kg": [12.4, 8.1, 15.0],
+    })
+
+def load_harvest_df():
+    """本物→ダメならサンプル。状態も返す。"""
+    try:
+        engine = get_engien()
+        df = pd.read_sql("SELECT * FROM harvest_fact LIMIT 200", engine)
+        return df, "real", None
+    except Exception as e:
+        retun sample_harvest_df(), "sample", e
+
+df, mode, err = load_harvset_df()
+
+if mode == "real":
+    st.success("Real data mode (DBから読み込み)")
+else:
+    st.warning("Sample mode（DB未準備/エラーのためサンプルで準備)")
+    st.caption(f"原因: {type(err).__name__}: {err}")
+
+st.dataframe(df)
