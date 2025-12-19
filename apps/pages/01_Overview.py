@@ -10,7 +10,7 @@ engine = get_engine()
 
 @st.cache_data(ttl=60)
 def load_harvest():
-    q = "select month, farm, total_kg from harvest_monthly order by month, farm"
+    q = "select month, farm, total_kg from v_harvest_monthly order by month, farm"
     return pd.read_sql(q, engine)
 
 df = load_harvest()
