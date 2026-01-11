@@ -1,4 +1,43 @@
-.env
+# Postgres volumeはdocker管理（ローカルに生成される場合も念のため）
+postgres_data/
+**/postgres_data/
+
+# API artifacts
+api/__pycache__/
+api/.pytest_cache/
+api/.ruff_cache/
+api/.mypy_cache/
+api/.venv/
+api/*.log/
+
+# Alembic（versionsはコミットする）
+api/alembic/versions/__pycache__/
+
+# Windows download file metadata
+*Zone.Identifier*
+
+# Python
+__python__/
+*.py[cod]
+
+# Virtualenv
+.venv/
 __pycache__/
-.vscode/
+
+# env
+.env
+
+# Streamlit secrets
+.streamlit/secrets.toml
+
+# DB / data
+data/
 *.db
+*.sqlite
+
+# OS
+.DS_Store
+Thumbs.db
+desltop.ini
+
+.vscode/
