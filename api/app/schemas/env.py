@@ -5,20 +5,23 @@ from pydantic import BaseModel
 
 
 class EnvBase(BaseModel):
-    measured_at: datetime
-    temperature: Optional[float] = None
-    humidity: Optional[float] = None
-
+    month: str
+    temperature: float
+    humidity: float
+    medium: str
+    water_content: float
+    illuminance: float
 
 class EnvCreate(EnvBase):
     pass
 
-
 class EnvUpdate(BaseModel):
-    measured_at: Optional[datetime] = None
+    month: Optional[str] = None
     temperature: Optional[float] = None
     humidity: Optional[float] = None
-
+    medium: Optional[str] = None
+    water_content: Optional[float] = None
+    illuminance: Optional[float] = None
 
 class EnvOut(EnvBase):
     id: int

@@ -1,12 +1,15 @@
 import os
+import sys
+from pathlib import Path
 from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config, pool
 from alembic import context
 
 from app.core.db import Base
-from app.models import Env, Harvest # nopa: F401 (autogenerateのためimport)
+from app.models import Env, Harvest 
 
+sys.path.append(str(Path(__file__).resolve().parents[1]))
 config = context.config
 fileConfig(config.config_file_name)
 

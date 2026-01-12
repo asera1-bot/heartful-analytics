@@ -1,4 +1,4 @@
-from app.models.env import Env
-from app.models.harvest import Harvest
+from .env import Env
+from .harvest import Harvest
 
 __all__ = ["Env", "Harvest"]
