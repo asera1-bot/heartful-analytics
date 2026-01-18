@@ -1,7 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException, Query, Response
+from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
+from app.crud import harvest as crud_harvest
 from app.core.db import get_db
 from app.models.harvest import Harvest
 from app.schemas.harvest import HarvestCreate, HarvestOut, HarvestUpdate
@@ -33,16 +34,9 @@ def get_harvest(harvest_id: int, db: Session = Depends(get_db)):
     return obj
 
 
-@router.post("/", response_model=HarvestOut, status_code=201)
-def create_harvest(
-    data: HarvestCreate,
-    db: Session = Depends(get_db),
-):
-    obj = Harvest(**data.model_dump())
-    db.add(obj)
-    db.commit()
-    db.refresh(obj)
-    return obj
+@router.post("/", response_model=HarvestOut, status_code=status.HTTP_201_CREATED)
+def create_harvest(data: HarvestCreate, db: Session = Depends(get_db)):
+    return crud_harvest.create(db, data)
 
 
 @router.patch("/{harvest_id}", response_model=HarvestOut)

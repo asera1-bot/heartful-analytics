@@ -1,13 +1,22 @@
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
+from fastapi import HTTPException, status
 
 from app import models
 from app.schemas.env import EnvCreate, EnvUpdate
 
 
 def create(db: Session, data: EnvCreate):
-    obj: models.Env(**data.model_dump())
+    obj = models.Env(**data.model_dump())
     db.add(obj)
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=stats.HTTP_409_CONFICT,
+            detail="env already exists for this month and medium",
+        )
     db.refresh(obj)
     return obj
 

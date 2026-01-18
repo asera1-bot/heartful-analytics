@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import Optional
 
 from pydantic import BaseModel
@@ -12,8 +11,10 @@ class EnvBase(BaseModel):
     water_content: float
     illuminance: float
 
+
 class EnvCreate(EnvBase):
     pass
+
 
 class EnvUpdate(BaseModel):
     month: Optional[str] = None
@@ -22,6 +23,7 @@ class EnvUpdate(BaseModel):
     medium: Optional[str] = None
     water_content: Optional[float] = None
     illuminance: Optional[float] = None
+
 
 class EnvOut(EnvBase):
     id: int

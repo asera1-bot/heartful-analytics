@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from app import models
+from app.crud import env as crud_env
 from app.db.session import get_db
 from app.schemas.env import EnvCreate, EnvOut, EnvUpdate
 
@@ -10,11 +10,7 @@ router = APIRouter(prefix="/env", tags=["env"])
 
 @router.post("/", response_model=EnvOut, status_code=status.HTTP_201_CREATED)
 def create_env(data: EnvCreate, db: Session = Depends(get_db)):
-    obj = models.Env(**data.model_dump())
-    db.add(obj)
-    db.commit()
-    db.refresh(obj)
-    return obj
+    return crud_env.create(db, data)
 
 
 @router.get("/", response_model=list[EnvOut])
@@ -23,7 +19,7 @@ def list_env(limit: int = 100, offset: int = 0, db: Session = Depends(get_db)):
 
 
 @router.get("/{env_id}", response_model=EnvOut)
-def get_harvest(env_id: int, db: Session = Depends(get_db)):
+def get_env(env_id: int, db: Session = Depends(get_db)):
     obj = db.get(models.Env, env_id)
     if not obj:
         raise HTTPException(status_code=404, detail="env not found")
@@ -39,7 +35,7 @@ def update_env(env_id: int, data: EnvUpdate, db: Session = Depends(get_db)):
     for (
         k,
         v,
-    ) in data.model_dump(exclude_unset=Ture).items():
+    ) in data.model_dump(exclude_unset=True).items():
         setattr(obj, k, v)
 
     db.commit()

@@ -15,7 +15,7 @@ config = context.config
 fileConfig(config.config_file_name)
 
 def get_url() -> str:
-    # docker compose では env_file から DATABASE_URL を渡す
+    # docker compose では harvest_file から DATABASE_URL を渡す
     return os.environ["DATABASE_URL"]
 
 target_metadata = Base.metadata
