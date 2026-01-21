@@ -12,6 +12,7 @@ api/*.log/
 
 # Alembic（versionsはコミットする）
 api/alembic/versions/__pycache__/
+alembic_version
 
 # Windows download file metadata
 *Zone.Identifier*
@@ -23,8 +24,9 @@ __python__/
 # Virtualenv
 .venv/
 __pycache__/
+*.pyc
 
-# env
+# local env
 .env
 
 # Streamlit secrets
@@ -34,6 +36,7 @@ __pycache__/
 data/
 *.db
 *.sqlite
+*.sqlite3
 
 # OS
 .DS_Store
