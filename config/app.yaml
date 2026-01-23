@@ -1,4 +1,4 @@
-db_path: "../data/db/harvests_real.db"
+db_path: "data/db/harvests_real.db"
 default_source: "mv"
 app_title: "はーとふる農園｜収量ダッシュボード（実務）"
 

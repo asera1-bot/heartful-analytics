@@ -44,3 +44,19 @@ Thumbs.db
 desltop.ini
 
 .vscode/
+
+# --- API (FastAPI + DB + Migration) ---
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+pydantic==2.10.6
+alembic==1.14.1
+psycopg==3.2.5
+
+# --- Auth( JWT / Password Hash) ---
+python-jose[cryptography]==3.3.0
+passlib[bcypt]==1.7.4
+python-multipart==0.0.9
+
+# --- Dashboard dependencies missing ---
+plotly==5.24.1
+PyYAML==6.0.2
