@@ -62,25 +62,41 @@ def read_csv_flexible(file):
             continue
         except pd.errors.EmptyDataError:
             continue
-    raise ValueError("CSVの文字コードを判別できません（UTF-8　/　CP932日対応 or 空ファイル）")
+    raise ValueError("CSVの文字コードを判別できません（UTF-8　/　CP932非対応 or 空ファイル）")
     
 df = read_csv_flexible(file)    
 
-required = {"farm", "month", "total_kg"}
-missing = required - set(df.column)
+st.write("読み込めた列名:", list(df.columns))
+st.dataframe(df.head(5), use_container_width=True)
+
+# 列名マッピング（実CSV　→　内部仕様）
+colmap = {
+    "企業名": "farm",
+    "収穫日": "date",
+    "収穫量（ｇ）": "total_g",
+}
+
+df = df.rename(columns=colmap)
+
+required_src = {"farm", "month", "total_kg"}
+missing_src = required_src - set(df.columns)
 if missing:
-    st.error(f"必須列が不足: {sorted{missing)}")
+    st.error(f"CSVに必須列が不足: {sorted(missing_src)}")
     st.stop()
 
-df = df[["farm", "month", "total_kg"]].copy()
+# 変換処理(日時→月次、g→kg)
 df["farm"] = df["farm"].astype(str).str.strip()
-df["month"] = pd.to_datetime(df["month"], errors="coerce").dt.to_period("M").astype(str)
-df["total_kg"] = pd.to_numeric(df["total_kg"], errors="coerce")
+df["month"] = pd.to_datetime(df["date"], errors="coerce").dt.to_period("M").astype(str)
+df["total_kg"] = pd.to_numeric(df["total_g"], errors="coerce") / 1000.0
 
-bad = df[df["month"].isna() | df["total_kg"].isna() | (df["farm"] == "")]
-if not bad.empty:
-    st.warning("不正行があるため取り込めません。該当行を確認してください。")
-    st.dataframe(bad, use_container_width=True)
+df = df[["farm", "month", "total_kg"]]
+df = df.groupby(["farm", "month"], as_index=False)["total_kg"].sum()
+
+# 変換後チェック
+required = {"farm", "month", "total_kg"}
+missing = required - set(df.columns)
+if missing:
+    st.error(f"変換後に必須列が不足: {sorted(missing)}")
     st.stop()
 
 st.subheader("取り込みプレビュー")
@@ -102,7 +118,7 @@ def ensure_tables(c: sqlite3.Connection) -> None:
     )
     c.execute(
         """
-        CREATE TABLE IF NOT EXISTS mv_harvest_monthly )
+        CREATE TABLE IF NOT EXISTS mv_harvest_monthly (
             month TEXT NOT NULL,
             farm TEXT NOT NULL,
             total_kg REAL NOT NULL,
@@ -112,12 +128,12 @@ def ensure_tables(c: sqlite3.Connection) -> None:
     )
 
 def refresh_mv(c: sqlite3.Connection) -> None:
-    c.execute("DELETE FROM mv_harvest_monhtly;")
+    c.execute("DELETE FROM mv_harvest_monthly;")
     c.execute(
         """
         INSERT INTO mv_harvest_monthly (month, farm, total_kg)
         SELECT month, farm, SUM(total_kg)
-        FROM harvest_monhtly
+        FROM harvest_monthly
         GROUP BY month, farm;
         """
     )
