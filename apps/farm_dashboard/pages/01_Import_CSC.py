@@ -45,7 +45,7 @@ TEMPLATE = pd.DataFrame(
 )
 
 with st.expander("CSVテンプレートを確認", expanded=False):
-    st.dataframe(TEMPLATE, use_container_width=True, hide_index=True)
+    st.dataframe(TEMPLATE, width="stretch", hide_index=True)
 
 st.caption("CSV列: farm, month, total_kg(UTF-8推奨)")
 file = st.file_uploader("CSVファイルを選択", type=["csv"])
@@ -66,6 +66,7 @@ def read_csv_flexible(file):
     
 df = read_csv_flexible(file)    
 
+<<<<<<< HEAD
 st.write("読み込めた列名:", list(df.columns))
 st.dataframe(df.head(5), use_container_width=True)
 
@@ -85,14 +86,32 @@ if missing:
     st.stop()
 
 # 変換処理(日時→月次、g→kg)
+=======
+# 列名マッピング
+rename_map = {}
+for c in df.columns:
+    if "企業" in c:
+        rename_map[c] = "farm"
+    elif "収穫日" in c or "日付" in c:
+        rename_map[c] = "date"
+    elif "収穫量" in c:
+        rename_map[c] = "total_g"
+
+df = df.rename(columns=rename_map)
+
+# 元CSVに必要な列チェック
+required_src = {"farm", "date", "total_g"}
+missing_src = required_src - set(df.columns)
+if missing_src:
+    st.error(f"CSVに必要な列が不足しています: {sorted(missng_src)}")
+    st.stop()
+
+# 変換処理
+>>>>>>> 21b8d39 (finish)
 df["farm"] = df["farm"].astype(str).str.strip()
 df["month"] = pd.to_datetime(df["date"], errors="coerce").dt.to_period("M").astype(str)
 df["total_kg"] = pd.to_numeric(df["total_g"], errors="coerce") / 1000.0
 
-df = df[["farm", "month", "total_kg"]]
-df = df.groupby(["farm", "month"], as_index=False)["total_kg"].sum()
-
-# 変換後チェック
 required = {"farm", "month", "total_kg"}
 missing = required - set(df.columns)
 if missing:
@@ -100,7 +119,7 @@ if missing:
     st.stop()
 
 st.subheader("取り込みプレビュー")
-st.dataframe(df, use_container_width=True, hide_index=True)
+st.dataframe(df, width="stretch", hide_index=True)
 
 # 取り込み
 # ここでは[harvest_monthly] [mv_harvest_monthly] をテーブルとして運用する想定

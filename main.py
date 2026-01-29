@@ -2,6 +2,14 @@ import pandas as pd
 import streamlit as st
 from sqlalchemy import text
 from db_config import get_engine
+from routers.auth import router as auth_router
+from db.users import ensure_users_table
+
+@app.on_event("startup")
+def startup():
+    ensure_users_table()
+
+app.include_router(auth_router)
 
 st.set_page_config(page_title="はーとふる農園｜ダッシュボード", layout="wide")
 st.title("はーとふる農園｜収量ダッシュボード（本番DB接続）")

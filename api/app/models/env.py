@@ -1,7 +1,7 @@
 from sqlalchemy import Float, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column
 
-from app.core.db import Base
+from app.models.base import Base
 
 
 class Env(Base):

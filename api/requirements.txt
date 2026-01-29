@@ -8,3 +8,7 @@ alembic==1.14.0
 pydantic==2.10.2
 pydantic-settings==2.6.1
 ruff==0.8.6
+
+python-jose[cryptgraphy]
+passlib[bcypt]
+python-multipart

@@ -28,8 +28,8 @@ def list_tables(db_path: Path) -> pd.DataFrame:
 
 @st.cache_data(ttl=30)
 def load_df(source: str) -> pd.DataFrame:
-    q_mv = "SELECT month, farm, total_kg FROM mv_farm_totals ORDER BY month, farm"
-    q_view = "SELECT month, farm, total_kg FROM v_farm_month_totals ORDER BY month, farm"
+    q_mv = "SELECT month, farm, total_kg FROM mv_harvest_monthly ORDER BY month, farm"
+    q_view = "SELECT month, farm, total_kg FROM harvest_monthly ORDER BY month, farm"
     query = q_mv if source == "mv" else q_view
 
     with sqlite3.connect(str(DB)) as conn:
@@ -43,7 +43,7 @@ def main():
     with st.expander("Debug（環境確認）", expanded=False):
         st.write("DB path:", str(DB))
         st.write("Exists:", DB.exists())
-        st.dataframe(list_tables(DB), use_container_width=True, hide_index=True)
+        st.dataframe(list_tables(DB), width="stretch", hide_index=True)
 
     default_source = CFG.get("default_source", "mv")
     source = st.radio(
@@ -62,7 +62,7 @@ def main():
     c1, c2 = st.columns([2, 3])
 
     with c1:
-        st.dataframe(df, use_container_width=True, hide_index=True)
+        st.dataframe(df, width="stretch", hide_index=True)
 
     with c2:
         if df.empty:
@@ -77,7 +77,7 @@ def main():
                 text="total_kg",
                 title=f"月別 × 圃場合計（{source.upper()}）",
             )
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width="stretch")
 
 
 if __name__ == "__main__":

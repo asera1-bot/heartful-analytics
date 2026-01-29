@@ -1,7 +1,7 @@
 from datetime import datetime
 from sqlalchemy import DateTime, Float, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column
-from app.core.db import Base
+from app.models.base import Base
 
 
 class Harvest(Base):

@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
+from app.auth import get_current_user
 
 from app.crud import harvest as crud_harvest
 from app.core.db import get_db
@@ -8,14 +9,13 @@ from app.models.harvest import Harvest
 from app.schemas.harvest import HarvestCreate, HarvestOut, HarvestUpdate
 
 router = APIRouter(prefix="/harvest", tags=["harvest"])
-
+usre = Depends(get_current_user)
 
 @router.get("/", response_model=dict)
-def list_harvest(
+def list_harvest(user=Depends(get_current_user)):
     limit: int = Query(50, ge=1, le=200),
     offset: int = Query(0, ge=0),
     db: Session = Depends(get_db),
-):
     total = db.execute(select(func.count()).select_from(Harvest)).scalar_one()
     items = (
         db.execute(select(Harvest).order_by(Harvest.id).limit(limit).offset(offset)).scalars().all()

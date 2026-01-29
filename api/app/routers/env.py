@@ -4,6 +4,9 @@ from sqlalchemy.orm import Session
 from app.crud import env as crud_env
 from app.db.session import get_db
 from app.schemas.env import EnvCreate, EnvOut, EnvUpdate
+from fastapi import APIRouter, Depends
+from app.auth import get_current_user
+from app.core.db import get_db
 
 router = APIRouter(prefix="/env", tags=["env"])
 
@@ -13,8 +16,13 @@ def create_env(data: EnvCreate, db: Session = Depends(get_db)):
     return crud_env.create(db, data)
 
 
-@router.get("/", response_model=list[EnvOut])
-def list_env(limit: int = 100, offset: int = 0, db: Session = Depends(get_db)):
+@router.get("/harvest", response_model=list[EnvOut])
+def list_env(
+        limit: int = 100,
+        offset: int = 0,
+        db: Session = Depends(get_db),
+        user = Depends(get_current_user)
+    ):
     return db.query(models.Env).offset(offset).limit(limit).all()
 
 
